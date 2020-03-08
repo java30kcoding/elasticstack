@@ -78,10 +78,76 @@ the default discovery settings are unsuitable for production use; at least one o
 
 > 把\#cluster.initial_master_nodes: ["node-1", "node-2"]注释打开
 
+#### 4.无法外网访问
+
+修改yml配置文件端口为0.0.0.0
+
 ## ElasticSearch插件
 
 ```
 ./elasticsearch-plugin list
 ./elasticsearch-plugin install analysis-icu
 ```
+
+### 国内建议使用离线安装方法
+
+```http
+https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-icu/analysis-icu-7.1.1.zip
+```
+
+```shell
+./elasticsearch-plugin install file:///yuanyl/analysis-icu-7.1.1.zip
+```
+
+> 在web端可以通过该api查看所安装的插件http://shaking.top:9200/_cat/plugins
+
+### Elastic提供插件的机制对系统进行扩展
+
++ Discovery Plugin
++ Analysis Plugin
++ Security Plugin
++ Management Plugin
++ Ingest Plugin
++ Mapper Plugin
++ Backup Plugin
+
+## 启动多实例
+
+```shell
+./elasticsearch -E node.name=node1 -E cluster.name=shaking -E path.data=node1_data -d
+./elasticsearch -E node.name=node2 -E cluster.name=shaking -E path.data=node2_data -d
+./elasticsearch -E node.name=node3 -E cluster.name=shaking -E path.data=node3_data -d
+```
+
+### 查看已启动节点
+
+```http
+http://shaking.top:9200/_cat/nodes
+```
+
+### 出现问题
+
+1. master节点启动成功，启动第二个节点的时候，查看nodes报错master_not_discovered_exception
+
+   初始化配置文件中的cluster.initial_master_nodes: node1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
