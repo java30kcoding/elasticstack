@@ -155,6 +155,25 @@ kibana remove
 
 ### DevTools
 
+## Docker的安装与使用
+
+### Docker下载地址
+
+```shell
+yum update
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+# 阿里仓库
+yum install docker-ce-18.03.1.ce
+```
+
+### 常用命令
+
+```shell
+systemctl start docker
+systemctl enable docker
+```
+
 
 
 
