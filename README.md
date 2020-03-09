@@ -40,6 +40,8 @@ su elastic
 
 ```shell
 ./elasticsearch -d
+# 也可以不切换用户使用下面命令直接启动
+su elastic -c "/yuanyl/elasticsearch-7.1.1/bin/elasticsearch -d"
 ```
 
 ### 启动问题
@@ -130,6 +132,30 @@ http://shaking.top:9200/_cat/nodes
 1. master节点启动成功，启动第二个节点的时候，查看nodes报错master_not_discovered_exception
 
    初始化配置文件中的cluster.initial_master_nodes: node1
+
+## Kibana的安装与简单配置
+
+### 使用华为云镜像下载安装
+
+```http
+wget https://mirrors.huaweicloud.com/kibana/7.1.1/kibana-7.1.1-linux-x86_64.tar.gz
+```
+
+### 修改Kibana配置指向ElasticSearch
+
+### 外网访问同ElasticSearch
+
+### Kibana插件
+
+```shell
+kibana-plugin install plugin_location
+kibana-plugin list
+kibana remove
+```
+
+### DevTools
+
+
 
 
 
