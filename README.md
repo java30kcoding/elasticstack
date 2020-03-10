@@ -149,6 +149,7 @@ wget https://mirrors.huaweicloud.com/kibana/7.1.1/kibana-7.1.1-linux-x86_64.tar.
 
 ```shell
 kibana-plugin install plugin_location
+# 离线安装方式
 kibana-plugin list
 kibana remove
 ```
@@ -174,9 +175,43 @@ systemctl start docker
 systemctl enable docker
 ```
 
+### Docker-Composer安装
 
+```shell
+curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /yuanyl/docker-compose
+chmod +x /yuanyl/docker-compose
+```
 
+### Docker-Composer常用命令
 
+```shell
+docker-compose up
+docker-compose down
+```
+
+> docker-compose.yaml文件在github上
+
+## Logstash安装与简单配置
+
+### Logstash下载地址
+
+```shell
+wget https://repo.huaweicloud.com/logstash/7.1.1/logstash-7.1.1.tar.gz
+```
+
+### 常用命令
+
+```shell
+logstash -f configLocation/logstash.conf
+```
+
+> Logstash需要java环境
+
+## ElasticSearch的索引，文档和REST API
+
+### 文档(Document)
+
++ ElasticSearch是面向文档的，文档是所有可搜索数据的最小单位
 
 
 
