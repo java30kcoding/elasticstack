@@ -156,6 +156,8 @@ kibana remove
 
 ### DevTools
 
+> API可以使用DevTools调用
+
 ## Docker的安装与使用
 
 ### Docker下载地址
@@ -212,8 +214,74 @@ logstash -f configLocation/logstash.conf
 ### 文档(Document)
 
 + ElasticSearch是面向文档的，文档是所有可搜索数据的最小单位
+  + 日志文件中的日志项
+  + 一本电影的具体信息 / 一张唱片的详细信息
+  + MP3播放器里的一首歌 / 一篇PDF文档中的具体内容
++ 文档会被序列化成JSON格式，保存在ElasticSearch中
+  + JSON对象由字段组成
+  + 每个字段都有对应的字段类型(字符串 / 数值 / 布尔 / 日期 / 二进制 / 范围类型)
++ 每个文档都有一个Unique ID
+  + 你可以自己指定ID
+  + 或者通过ElasticSearch自动生成
 
+#### JSON文档
 
++ 一篇文档包含了一系列的字段。类似数据库表中的一条记录
++ JSON文档格式灵活，不需要预先定义格式
+  + 字段的类型可以指定或者通过ElasticSearch自动推算
+  + 支持数组 / 支持嵌套
+
+#### 文档的元数据
+
++ 元数据，用于标注文档的相关信息
+  + _index 文档所属的索引名
+  + _type 文档所属的类型名
+  + _id 文档的唯一ID
+  + _source 文档的原始JSON数据
+  + _all 整合所有字段内容到该字段(目前已废除)
+  + _version 文档的版本信息
+  + _score 相关性打分
+
+### 索引
+
++ Index 索引是文档的容器，是一类文档的结合
+  + Index 体现了逻辑空间的概念：每个索引都有自己的Mapping定义，用于定义包含文档的字段名和字段类型
+  + Shard 体现了物理空间的概念：索引中的数据分散在Shard上
++ 索引的Mapping与Settings
+  + Mapping定义文档字段的类型
+  + Setting定义不同的数据分布
+
+### 与关系型数据库类比
+
+| RDBMS  | ElasticSearch |
+| ------ | ------------- |
+| Table  | Index(Type)   |
+| Row    | Document      |
+| Column | Field         |
+| Schema | Mapping       |
+| SQL    |               |
+
+### 一些基本的API
+
+```http
+//查看索引相关信息
+GET kibana_sample_data_ecommerce
+//查看索引文档总数
+GET kibana_sample_data_ecommerce/_count
+//catAPI
+//查看indices
+GET /_cat/indices/kibana*?v&s=index
+//查看状态为绿的索引
+GET /_cat/indices?v&health=green
+//按照文档个数排序
+GET /_cat/indices?v&s=docs.count:desc
+//查看具体的字段
+GET /_cat/indices/kibana*?pri&v&h=health,index,pri,rep,docs.count,mt
+//每个索引占用的内存
+GET /_cat/indices?v&h=i,tm&s=tm:desc
+```
+
+## ElasticSearch的节点，集群，分片和副本
 
 
 
