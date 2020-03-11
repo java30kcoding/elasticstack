@@ -187,8 +187,9 @@ chmod +x /yuanyl/docker-compose
 ### Docker-Composer常用命令
 
 ```shell
-docker-compose up
+docker-compose up -d
 docker-compose down
+docker ps # 查看镜像
 ```
 
 > docker-compose.yaml文件在github上
@@ -363,7 +364,28 @@ GET /_cat/indices?v&h=i,tm&s=tm:desc
 + 一个三节点的集群中，blogs索引的分片分布情况
   + 思考：增加一个节点或改大主分片数对系统的影响？
 
+![image.png](https://i.loli.net/2020/03/11/lAXYKv2Fomk8Ntf.png)
 
+### 分片的设定
+
++ 对于生产环境中分片的设定，需要提前做好容量规划
+  + 分片数设置过小
+    + 导致后续无法增加节点实现水平扩展
+    + 单个分片的数据量太大，导致数据重新分配耗时
+  + 分片数设置过大，7.0开始，默认主分片设置为1，解决了over - sharding问题
+    + 影响搜索结果的相关性打分，影响统计结果的准确性
+    + 单个节点上过多的分片，会导致资源浪费，同时也会影响性能
+
+### 查看集群的健康状况
+
++ Green 主分片与副本都正常分配
++ Yellow 主分片全部正常分配，有副本分片未能正常分配
++ Red 有主分片未能分配
+  + 例如，当服务器的磁盘容量超过85%时，去创建了一个新的索引
+
+```http
+GET _cluster/health
+```
 
 
 
