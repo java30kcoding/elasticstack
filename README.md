@@ -708,6 +708,29 @@ GET /_mget
 
 ### 批量查询 - msearch
 
+```http
+# msearch 操作
+POST kibana_sample_data_ecommerce/_msearch
+{}
+{"query" : {"match_all" : {}},"size":1}
+{"index" : "kibana_sample_data_flights"}
+{"query" : {"match_all" : {}},"size":2}
+```
+
+### 常见错误返回
+
+| 问题         | 原因               |
+| ------------ | ------------------ |
+| 无法连接     | 网络故障或集群挂了 |
+| 连接无法关闭 | 网络故障或节点出错 |
+| 429          | 集群过于繁忙       |
+| 4xx          | 请求体格式有错     |
+| 500          | 集群内部错误       |
+
+## 倒排索引
+
+### 正排与倒排索引
+
 
 
 
