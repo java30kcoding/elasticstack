@@ -260,7 +260,7 @@ logstash -f configLocation/logstash.conf
 | Row    | Document      |
 | Column | Field         |
 | Schema | Mapping       |
-| SQL    |               |
+| SQL    | DSL           |
 
 ### 一些基本的API
 
@@ -387,29 +387,326 @@ GET /_cat/indices?v&h=i,tm&s=tm:desc
 GET _cluster/health
 ```
 
+## ElasticSearch文档的基本CRUD与批量操作
 
+### 文档的CRUD
 
+| 操作类型 | 示例                                                         |
+| -------- | ------------------------------------------------------------ |
+| Index    | PUT my_index/_doc/1{"user":"shaking", "comment":"This is User!"} |
+| Create   | PUT my_index/\_create/1{"user":"shaking", "comment":"This is User!"}<br />POST my_index/_doc(不指定ID，自动生成)<br />{"user":"shaking","comment":"This is User!"} |
+| Read     | GET my_index/_doc/1                                          |
+| Update   | POST my_index/_update/1{"doc":{"user":"shaking","comment":"This is User!"}} |
+| Delete   | DELETE my_index/_doc/1                                       |
 
++ Type名，约定都用_doc
++ Create - 如果ID已存在，会失败
++ Index - 如果ID不存在，创建新的文档。否则先删除现有文档，在创建新的文档，版本会增加
++ Update - 文档必须已经存在，更新只会对响应字段做增量修改
 
+### Create一个文档
 
++ 支持自动生成文档ID和指定文档ID俩种方式
++ 通过调用"post /user/_doc"
+  + 系统会自动生成document ID
++ 使用HTTP PUT user/\_create/1时，URI中显示指定\_create，此时如果该ID的文档已经存在，操作失败
 
+### Get一个文档
 
++ 找到文档，返回HTTP 200
+  + 文档元信息
+    + _index / _type / 
+    + 版本信息，同一个ID的文档，即使被删除，Version号也会不断增加
+    + _source中包含了文档的所有原始信息
++ 找不到文档返回404
 
+![image.png](https://i.loli.net/2020/03/12/QqEk8BunGDJZ9CS.png)
 
+### Index文档
 
++ Index和Create不一样的地方：如果文档不存在，就索引新的文档。否则现有文档会被删除，新的文档被索引。版本信息+ 1
 
+![image.png](https://i.loli.net/2020/03/12/ub5tOs62THCvqdz.png)
 
+### Update文档
 
++ Update方法不会删除原来的文档，而是实现真正的数据更新
++ Post方法 / payload需要包含在"doc"中
 
+![image.png](https://i.loli.net/2020/03/12/qJL3BoG6u1lgvKi.png)
 
+### 使用Kibana的Dev tools进行REST API的操作
 
+```http
+#create document，自动生成 _id
+POST user/_doc
+{
+	"user":"shaking",
+	"post_date":"2020-03-12T21:04:44",
+	"message":"trying out Kibana"
+}
+```
 
+![image.png](https://i.loli.net/2020/03/12/QdGKFujzcPEV4iD.png)
 
+```http
+#create document，指定ID。如果ID已存在，报错
+PUT user/_doc/1?op_type=create
+{
+	"user":"shaking",
+	"post_date":"2020-03-12T21:07:25",
+	"message":"trying out Kibana"
+}
+```
 
+> 第一次执行
 
+![image.png](https://i.loli.net/2020/03/12/n8uQ5XZYUFPNvfq.png)
 
+> 第二次执行
 
+![image.png](https://i.loli.net/2020/03/12/n2rRuTAD9GW8Pgc.png)
 
+```http
+GET user/_doc/1
+```
+
+![image.png](https://i.loli.net/2020/03/12/rho397xwMcqTLbB.png)
+
+```http
+#Index方法
+PUT user/_doc/1
+{"user":"yuanyl"}
+```
+
+![image.png](https://i.loli.net/2020/03/12/yGF8czgoJ3XN9V1.png)
+
+```http
+GET user/_doc/1
+```
+
+![image.png](https://i.loli.net/2020/03/12/IkuRDPoxLTHeFrz.png)
+
+```http
+#在原文档上增加字段
+POST user/_update/1/
+{
+	"doc":{
+		"post_date":"2020-03-12T21:31:05",
+		"message":"Trying out ElasticSearch!"
+	}
+}
+```
+
+![image.png](https://i.loli.net/2020/03/12/iXTW1OYH6973hMJ.png)
+
+> 再次Get
+
+![image.png](https://i.loli.net/2020/03/12/gJVbC3mpjKTxoGX.png)
+
+### Bulk API
+
++ 支持在一次API调用中，对不同的索引进行操作
++ 支持四种类型操作
+  + Index
+  + Create
+  + Update
+  + Delete
++ 可以在URI中指定Index，也可以在请求的Payload中进行
++ 操作中单条操作失败，并不会影响其他操作
++ 返回结果包括了每一条操作的执行结果
+
+```http
+POST _bulk
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+{ "create" : { "_index" : "test2", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+```
+
+> 第一次调用结果
+
+```json
+{
+  "took" : 354,
+  "errors" : false,
+  "items" : [
+    {
+      "index" : {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "1",
+        "_version" : 1,
+        "result" : "created",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 2,
+          "failed" : 0
+        },
+        "_seq_no" : 0,
+        "_primary_term" : 1,
+        "status" : 201
+      }
+    },
+    {
+      "delete" : {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "2",
+        "_version" : 1,
+        "result" : "not_found",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 2,
+          "failed" : 0
+        },
+        "_seq_no" : 1,
+        "_primary_term" : 1,
+        "status" : 404
+      }
+    },
+    {
+      "create" : {
+        "_index" : "test2",
+        "_type" : "_doc",
+        "_id" : "3",
+        "_version" : 1,
+        "result" : "created",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 1,
+          "failed" : 0
+        },
+        "_seq_no" : 0,
+        "_primary_term" : 1,
+        "status" : 201
+      }
+    },
+    {
+      "update" : {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "1",
+        "_version" : 2,
+        "result" : "updated",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 2,
+          "failed" : 0
+        },
+        "_seq_no" : 2,
+        "_primary_term" : 1,
+        "status" : 200
+      }
+    }
+  ]
+}
+```
+
+> 第二次执行结果
+
+```json
+{
+  "took" : 15,
+  "errors" : true,
+  "items" : [
+    {
+      "index" : {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "1",
+        "_version" : 3,
+        "result" : "updated",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 2,
+          "failed" : 0
+        },
+        "_seq_no" : 3,
+        "_primary_term" : 1,
+        "status" : 200
+      }
+    },
+    {
+      "delete" : {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "2",
+        "_version" : 1,
+        "result" : "not_found",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 2,
+          "failed" : 0
+        },
+        "_seq_no" : 4,
+        "_primary_term" : 1,
+        "status" : 404
+      }
+    },
+    {
+      "create" : {
+        "_index" : "test2",
+        "_type" : "_doc",
+        "_id" : "3",
+        "status" : 409,
+        "error" : {
+          "type" : "version_conflict_engine_exception",
+          "reason" : "[3]: version conflict, document already exists (current version [1])",
+          "index_uuid" : "UCONuTVTQbOpYvzaAfBLCA",
+          "shard" : "0",
+          "index" : "test2"
+        }
+      }
+    },
+    {
+      "update" : {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "1",
+        "_version" : 4,
+        "result" : "updated",
+        "_shards" : {
+          "total" : 2,
+          "successful" : 2,
+          "failed" : 0
+        },
+        "_seq_no" : 5,
+        "_primary_term" : 1,
+        "status" : 200
+      }
+    }
+  ]
+}
+```
+
+### 批量读取 - mget
+
+批量操作，可以减少网络连接所产生的开销，提高性能
+
+```http
+# mget 操作
+GET /_mget
+{
+    "docs" : [
+        {
+            "_index" : "test",
+            "_id" : "1"
+        },
+        {
+            "_index" : "test",
+            "_id" : "2"
+        }
+    ]
+}
+```
+
+![image.png](https://i.loli.net/2020/03/12/kZxsEUGJ5V1YTjd.png)
+
+### 批量查询 - msearch
 
 
 
