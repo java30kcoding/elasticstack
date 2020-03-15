@@ -1418,9 +1418,59 @@ GET _analyze
 POST _analyze
 {
 	"analyzer":"icu_analyzer",
-	"text":"他说的确在理"
+	"text":"他说的确实在理"
 }
 ```
+
+```json
+{
+  "tokens" : [
+    {
+      "token" : "他",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 0
+    },
+    {
+      "token" : "说的",
+      "start_offset" : 1,
+      "end_offset" : 3,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 1
+    },
+    {
+      "token" : "确实",
+      "start_offset" : 3,
+      "end_offset" : 5,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 2
+    },
+    {
+      "token" : "在",
+      "start_offset" : 5,
+      "end_offset" : 6,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 3
+    },
+    {
+      "token" : "理",
+      "start_offset" : 6,
+      "end_offset" : 7,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 4
+    }
+  ]
+}
+```
+
+### 其他中文分词器
+
++ IK
+  + 支持自定义词库，支持热更新分词字典
++ THULAC
+
+## Search API概览
 
 
 
