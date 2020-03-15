@@ -1472,5 +1472,69 @@ POST _analyze
 
 ## Search API概览
 
+### 指定查询的索引
+
+| 语法                   | 范围              |
+| ---------------------- | ----------------- |
+| /_search               | 集群上所有的索引  |
+| /index1/_search        | index1            |
+| /index1,index2/_search | index1和index2    |
+| /index*/_search        | 以index开头的索引 |
+
+### URI查询
+
++ 使用"q"，指定查询字符串
++ "query string syntax"，KV键值对
+
+> curl XGET 
+>
+> "http://elasticsearch:9200/kibana_sample_data_ecommerce/_search?q=customer_first_name:Eddie"
+
+### Request Body
+
+![image.png](https://i.loli.net/2020/03/15/v8iGZBPwsFbN2Dg.png)
+
+### 搜索Response
+
+![image.png](https://i.loli.net/2020/03/15/aRkI4Ecz7KLmJtP.png)
+
+### 搜索的相关性Relevance
+
++ 搜索是用户和搜索引擎的对话
++ 用户关心的是搜索结果的相关性
+  + 是否可以找到所有相关的内容
+  + 有多少不相关的内容被返回了
+  + 文档的打分是否合理
+  + 结合业务需求，平衡结果排名
+
+### 衡量相关性
+
++ Information Retrieval
+  + Precision(查准率) - 尽可能返回较少的无关文档
+  + Recall(查全率) - 尽量返回较多的相关文档
+  + Ranking - 是否能够按照相关度进行排序
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
