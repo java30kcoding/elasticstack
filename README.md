@@ -1514,6 +1514,2131 @@ POST _analyze
   + Recall(查全率) - 尽量返回较多的相关文档
   + Ranking - 是否能够按照相关度进行排序
 
+## URI Search
+
+### 通过URI query实现搜索
+
+```http
+GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
+{
+	"profile":true
+}
+```
+
++ q 指定查询语句，使用Query String Syntax
++ df 默认字段，不指定时，会对所有字段进行查询
++ sort 排序 / from 和 size 用于分页
++ profile 可以查看查询是如何被执行的
+
+### Query String Syntax
+
++ 指定字段 vs 范查询
+
+  + q=title:2012 / q=2012
+
+  ```http
+  GET /movies/_search?q=title:2012
+  {
+  	"profile":true
+  }
+  ```
+
+  > 字段查询返回的结果
+
+  ```json
+  {
+    "took" : 2,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 2,
+        "relation" : "eq"
+      },
+      "max_score" : 11.303033,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "72378",
+          "_score" : 11.303033,
+          "_source" : {
+            "year" : 2009,
+            "title" : "2012",
+            "genre" : [
+              "Action",
+              "Drama",
+              "Sci-Fi",
+              "Thriller"
+            ],
+            "id" : "72378",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "105254",
+          "_score" : 5.2497,
+          "_source" : {
+            "year" : 2013,
+            "title" : "Crystal Fairy & the Magical Cactus and 2012",
+            "genre" : [
+              "Adventure",
+              "Comedy"
+            ],
+            "id" : "105254",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "TermQuery",
+                  "description" : "title:2012",
+                  "time_in_nanos" : 260767,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 0,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 5944,
+                    "match" : 0,
+                    "next_doc_count" : 4,
+                    "score_count" : 2,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 11202,
+                    "build_scorer_count" : 7,
+                    "create_weight" : 205517,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 38090
+                  }
+                }
+              ],
+              "rewrite_time" : 1794,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 38433,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 27506
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
+  ```http
+  GET /movies/_search?q=2012
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 6,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 219,
+        "relation" : "eq"
+      },
+      "max_score" : 11.303033,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "72378",
+          "_score" : 11.303033,
+          "_source" : {
+            "year" : 2009,
+            "title" : "2012",
+            "genre" : [
+              "Action",
+              "Drama",
+              "Sci-Fi",
+              "Thriller"
+            ],
+            "id" : "72378",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "2012",
+          "_score" : 8.778942,
+          "_source" : {
+            "year" : 1990,
+            "title" : "Back to the Future Part III",
+            "genre" : [
+              "Adventure",
+              "Comedy",
+              "Sci-Fi",
+              "Western"
+            ],
+            "id" : "2012",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "105254",
+          "_score" : 5.2497,
+          "_source" : {
+            "year" : 2013,
+            "title" : "Crystal Fairy & the Magical Cactus and 2012",
+            "genre" : [
+              "Adventure",
+              "Comedy"
+            ],
+            "id" : "105254",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "89745",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "Avengers, The",
+            "genre" : [
+              "Action",
+              "Adventure",
+              "Sci-Fi",
+              "IMAX"
+            ],
+            "id" : "89745",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "91483",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "Bullet to the Head",
+            "genre" : [
+              "Action",
+              "Crime",
+              "Film-Noir"
+            ],
+            "id" : "91483",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "91485",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "Expendables 2, The",
+            "genre" : [
+              "Action",
+              "Adventure"
+            ],
+            "id" : "91485",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "91500",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "The Hunger Games",
+            "genre" : [
+              "Action",
+              "Adventure",
+              "Drama",
+              "Sci-Fi",
+              "Thriller"
+            ],
+            "id" : "91500",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "91529",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "Dark Knight Rises, The",
+            "genre" : [
+              "Action",
+              "Adventure",
+              "Crime",
+              "IMAX"
+            ],
+            "id" : "91529",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "91535",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "Bourne Legacy, The",
+            "genre" : [
+              "Action",
+              "Adventure",
+              "Drama",
+              "Thriller",
+              "IMAX"
+            ],
+            "id" : "91535",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "91842",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2012,
+            "title" : "Contraband",
+            "genre" : [
+              "Action",
+              "Crime",
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "91842",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "DisjunctionMaxQuery",
+                  "description" : "(title.keyword:2012 | id.keyword:2012 | year:[2012 TO 2012] | genre:2012 | @version:2012 | @version.keyword:2012 | id:2012 | genre.keyword:2012 | title:2012)",
+                  "time_in_nanos" : 3379409,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 0,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 557483,
+                    "match" : 0,
+                    "next_doc_count" : 224,
+                    "score_count" : 219,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 260618,
+                    "build_scorer_count" : 10,
+                    "create_weight" : 1134547,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 1426307
+                  },
+                  "children" : [
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title.keyword:2012",
+                      "time_in_nanos" : 159314,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 2,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 1,
+                        "compute_max_score_count" : 1,
+                        "compute_max_score" : 3334,
+                        "advance" : 1075,
+                        "advance_count" : 2,
+                        "score" : 787,
+                        "build_scorer_count" : 6,
+                        "create_weight" : 144773,
+                        "shallow_advance" : 1199,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 8133
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "id.keyword:2012",
+                      "time_in_nanos" : 276410,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 2,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 1,
+                        "compute_max_score_count" : 1,
+                        "compute_max_score" : 15051,
+                        "advance" : 2375,
+                        "advance_count" : 2,
+                        "score" : 2164,
+                        "build_scorer_count" : 6,
+                        "create_weight" : 234007,
+                        "shallow_advance" : 6255,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 16545
+                      }
+                    },
+                    {
+                      "type" : "PointRangeQuery",
+                      "description" : "year:[2012 TO 2012]",
+                      "time_in_nanos" : 1275466,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 6,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 5538,
+                        "match" : 0,
+                        "next_doc_count" : 10,
+                        "score_count" : 216,
+                        "compute_max_score_count" : 3,
+                        "compute_max_score" : 1377,
+                        "advance" : 127200,
+                        "advance_count" : 211,
+                        "score" : 40379,
+                        "build_scorer_count" : 10,
+                        "create_weight" : 1116,
+                        "shallow_advance" : 3222,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 1096177
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "genre:2012",
+                      "time_in_nanos" : 43117,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 0,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 0,
+                        "compute_max_score_count" : 0,
+                        "compute_max_score" : 0,
+                        "advance" : 0,
+                        "advance_count" : 0,
+                        "score" : 0,
+                        "build_scorer_count" : 5,
+                        "create_weight" : 40959,
+                        "shallow_advance" : 0,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 2152
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "@version:2012",
+                      "time_in_nanos" : 24324,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 0,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 0,
+                        "compute_max_score_count" : 0,
+                        "compute_max_score" : 0,
+                        "advance" : 0,
+                        "advance_count" : 0,
+                        "score" : 0,
+                        "build_scorer_count" : 5,
+                        "create_weight" : 23256,
+                        "shallow_advance" : 0,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 1062
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "@version.keyword:2012",
+                      "time_in_nanos" : 31752,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 0,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 0,
+                        "compute_max_score_count" : 0,
+                        "compute_max_score" : 0,
+                        "advance" : 0,
+                        "advance_count" : 0,
+                        "score" : 0,
+                        "build_scorer_count" : 5,
+                        "create_weight" : 30750,
+                        "shallow_advance" : 0,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 996
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "id:2012",
+                      "time_in_nanos" : 93874,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 2,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 1,
+                        "compute_max_score_count" : 1,
+                        "compute_max_score" : 2242,
+                        "advance" : 1102,
+                        "advance_count" : 2,
+                        "score" : 1424,
+                        "build_scorer_count" : 6,
+                        "create_weight" : 79104,
+                        "shallow_advance" : 1134,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 8855
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "genre.keyword:2012",
+                      "time_in_nanos" : 26175,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 0,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 0,
+                        "compute_max_score_count" : 0,
+                        "compute_max_score" : 0,
+                        "advance" : 0,
+                        "advance_count" : 0,
+                        "score" : 0,
+                        "build_scorer_count" : 5,
+                        "create_weight" : 24969,
+                        "shallow_advance" : 0,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 1200
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:2012",
+                      "time_in_nanos" : 86061,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 4,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 2,
+                        "compute_max_score_count" : 2,
+                        "compute_max_score" : 8343,
+                        "advance" : 2889,
+                        "advance_count" : 4,
+                        "score" : 5522,
+                        "build_scorer_count" : 7,
+                        "create_weight" : 40478,
+                        "shallow_advance" : 3344,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 25465
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time" : 22305,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 412894,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 346832
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
++ Term vs Phrase
+
+  + Beautiful Mind等效于Beautiful OR Mind
+  + "Beautiful Mind"，等效于Beautiful AND Mind。Phrase查询，还要求前后顺序保持一致
+
+  ```http
+  GET /movies/_search?q=title:"Beautiful Mind"
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 8,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 1,
+        "relation" : "eq"
+      },
+      "max_score" : 13.68748,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4995",
+          "_score" : 13.68748,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Beautiful Mind, A",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4995",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "PhraseQuery",
+                  "description" : """title:"beautiful mind"""",
+                  "time_in_nanos" : 4429018,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 1,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 294376,
+                    "match" : 282064,
+                    "next_doc_count" : 4,
+                    "score_count" : 1,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 14535,
+                    "build_scorer_count" : 8,
+                    "create_weight" : 1811031,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 2026997
+                  }
+                }
+              ],
+              "rewrite_time" : 3533,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 38665,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 23575
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
+  ```http
+  GET /movies/_search?q=title:Beautiful Mind
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 5,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 20,
+        "relation" : "eq"
+      },
+      "max_score" : 13.687479,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4995",
+          "_score" : 13.687479,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Beautiful Mind, A",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4995",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3912",
+          "_score" : 8.723258,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Beautiful",
+            "genre" : [
+              "Comedy",
+              "Drama"
+            ],
+            "id" : "3912",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "47404",
+          "_score" : 8.576847,
+          "_source" : {
+            "year" : 2004,
+            "title" : "Mind Game",
+            "genre" : [
+              "Adventure",
+              "Animation",
+              "Comedy",
+              "Fantasy",
+              "Romance",
+              "Sci-Fi"
+            ],
+            "id" : "47404",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4242",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Beautiful Creatures",
+            "genre" : [
+              "Comedy",
+              "Crime",
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "4242",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4372",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Crazy/Beautiful",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4372",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "1046",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1996,
+            "title" : "Beautiful Thing",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "1046",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "94",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1996,
+            "title" : "Beautiful Girls",
+            "genre" : [
+              "Comedy",
+              "Drama",
+              "Romance"
+            ],
+            "id" : "94",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3302",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1999,
+            "title" : "Beautiful People",
+            "genre" : [
+              "Comedy"
+            ],
+            "id" : "3302",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "90353",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2010,
+            "title" : "Beautiful Boy",
+            "genre" : [
+              "Drama"
+            ],
+            "id" : "90353",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "100487",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2013,
+            "title" : "Beautiful Creatures",
+            "genre" : [
+              "Drama",
+              "Fantasy",
+              "Romance"
+            ],
+            "id" : "100487",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "BooleanQuery",
+                  "description" : """title:beautiful (title.keyword:Mind | id.keyword:Mind | MatchNoDocsQuery("failed [year] query, caused by number_format_exception:[For input string: "Mind"]") | genre:mind | @version:mind | @version.keyword:Mind | id:mind | genre.keyword:Mind | title:mind)""",
+                  "time_in_nanos" : 2849206,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 14,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 166203,
+                    "match" : 6024,
+                    "next_doc_count" : 25,
+                    "score_count" : 20,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 47844,
+                    "build_scorer_count" : 10,
+                    "create_weight" : 663147,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 1965918
+                  },
+                  "children" : [
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:beautiful",
+                      "time_in_nanos" : 403273,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 9,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 9643,
+                        "match" : 0,
+                        "next_doc_count" : 6,
+                        "score_count" : 16,
+                        "compute_max_score_count" : 9,
+                        "compute_max_score" : 35104,
+                        "advance" : 20372,
+                        "advance_count" : 14,
+                        "score" : 31364,
+                        "build_scorer_count" : 13,
+                        "create_weight" : 189548,
+                        "shallow_advance" : 9280,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 107894
+                      }
+                    },
+                    {
+                      "type" : "DisjunctionMaxQuery",
+                      "description" : """(title.keyword:Mind | id.keyword:Mind | MatchNoDocsQuery("failed [year] query, caused by number_format_exception:[For input string: "Mind"]") | genre:mind | @version:mind | @version.keyword:Mind | id:mind | genre.keyword:Mind | title:mind)""",
+                      "time_in_nanos" : 591273,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 9,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 1539,
+                        "match" : 0,
+                        "next_doc_count" : 2,
+                        "score_count" : 5,
+                        "compute_max_score_count" : 9,
+                        "compute_max_score" : 13017,
+                        "advance" : 11720,
+                        "advance_count" : 7,
+                        "score" : 5803,
+                        "build_scorer_count" : 13,
+                        "create_weight" : 452817,
+                        "shallow_advance" : 5881,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 100450
+                      },
+                      "children" : [
+                        {
+                          "type" : "TermQuery",
+                          "description" : "title.keyword:Mind",
+                          "time_in_nanos" : 70653,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 69666,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 981
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "id.keyword:Mind",
+                          "time_in_nanos" : 33457,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 32847,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 604
+                          }
+                        },
+                        {
+                          "type" : "MatchNoDocsQuery",
+                          "description" : """MatchNoDocsQuery("failed [year] query, caused by number_format_exception:[For input string: "Mind"]")""",
+                          "time_in_nanos" : 1688,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 523,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 1159
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "genre:mind",
+                          "time_in_nanos" : 19210,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 18556,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 648
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "@version:mind",
+                          "time_in_nanos" : 51535,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 51036,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 493
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "@version.keyword:Mind",
+                          "time_in_nanos" : 40439,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 39804,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 629
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "id:mind",
+                          "time_in_nanos" : 59898,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 59452,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 440
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "genre.keyword:Mind",
+                          "time_in_nanos" : 30250,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 0,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 0,
+                            "match" : 0,
+                            "next_doc_count" : 0,
+                            "score_count" : 0,
+                            "compute_max_score_count" : 0,
+                            "compute_max_score" : 0,
+                            "advance" : 0,
+                            "advance_count" : 0,
+                            "score" : 0,
+                            "build_scorer_count" : 5,
+                            "create_weight" : 29752,
+                            "shallow_advance" : 0,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 492
+                          }
+                        },
+                        {
+                          "type" : "TermQuery",
+                          "description" : "title:mind",
+                          "time_in_nanos" : 185738,
+                          "breakdown" : {
+                            "set_min_competitive_score_count" : 0,
+                            "match_count" : 0,
+                            "shallow_advance_count" : 9,
+                            "set_min_competitive_score" : 0,
+                            "next_doc" : 1182,
+                            "match" : 0,
+                            "next_doc_count" : 2,
+                            "score_count" : 5,
+                            "compute_max_score_count" : 9,
+                            "compute_max_score" : 11260,
+                            "advance" : 9951,
+                            "advance_count" : 7,
+                            "score" : 4727,
+                            "build_scorer_count" : 9,
+                            "create_weight" : 100309,
+                            "shallow_advance" : 3958,
+                            "create_weight_count" : 1,
+                            "build_scorer" : 54309
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time" : 17478,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 80502,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 62536
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
++ 分组与引号
+
+  + title:(Beautiful AND Mind)
+  + title="Beautiful Mind"
+
+  ```http
+  GET /movies/_search?q=title:(Beautiful Mind)
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 3,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 20,
+        "relation" : "eq"
+      },
+      "max_score" : 13.687479,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4995",
+          "_score" : 13.687479,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Beautiful Mind, A",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4995",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3912",
+          "_score" : 8.723258,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Beautiful",
+            "genre" : [
+              "Comedy",
+              "Drama"
+            ],
+            "id" : "3912",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "47404",
+          "_score" : 8.576847,
+          "_source" : {
+            "year" : 2004,
+            "title" : "Mind Game",
+            "genre" : [
+              "Adventure",
+              "Animation",
+              "Comedy",
+              "Fantasy",
+              "Romance",
+              "Sci-Fi"
+            ],
+            "id" : "47404",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4242",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Beautiful Creatures",
+            "genre" : [
+              "Comedy",
+              "Crime",
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "4242",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4372",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Crazy/Beautiful",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4372",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "1046",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1996,
+            "title" : "Beautiful Thing",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "1046",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "94",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1996,
+            "title" : "Beautiful Girls",
+            "genre" : [
+              "Comedy",
+              "Drama",
+              "Romance"
+            ],
+            "id" : "94",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3302",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1999,
+            "title" : "Beautiful People",
+            "genre" : [
+              "Comedy"
+            ],
+            "id" : "3302",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "90353",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2010,
+            "title" : "Beautiful Boy",
+            "genre" : [
+              "Drama"
+            ],
+            "id" : "90353",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "100487",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2013,
+            "title" : "Beautiful Creatures",
+            "genre" : [
+              "Drama",
+              "Fantasy",
+              "Romance"
+            ],
+            "id" : "100487",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "BooleanQuery",
+                  "description" : "title:beautiful title:mind",
+                  "time_in_nanos" : 936457,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 14,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 236034,
+                    "match" : 5505,
+                    "next_doc_count" : 25,
+                    "score_count" : 20,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 62556,
+                    "build_scorer_count" : 10,
+                    "create_weight" : 245318,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 386974
+                  },
+                  "children" : [
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:beautiful",
+                      "time_in_nanos" : 351633,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 9,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 5044,
+                        "match" : 0,
+                        "next_doc_count" : 6,
+                        "score_count" : 16,
+                        "compute_max_score_count" : 9,
+                        "compute_max_score" : 27250,
+                        "advance" : 62852,
+                        "advance_count" : 14,
+                        "score" : 22658,
+                        "build_scorer_count" : 13,
+                        "create_weight" : 129366,
+                        "shallow_advance" : 9176,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 95219
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:mind",
+                      "time_in_nanos" : 189946,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 9,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 1817,
+                        "match" : 0,
+                        "next_doc_count" : 2,
+                        "score_count" : 5,
+                        "compute_max_score_count" : 9,
+                        "compute_max_score" : 30344,
+                        "advance" : 17224,
+                        "advance_count" : 7,
+                        "score" : 6259,
+                        "build_scorer_count" : 13,
+                        "create_weight" : 97633,
+                        "shallow_advance" : 5006,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 31617
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time" : 21789,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 117226,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 82723
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
++ 布尔操作
+
+  + AND / OR / NOT 或者 && / || / !
+    + 必须大写
+    + title:(matrix NOT reloaded)
+
+  ```http
+  GET /movies/_search?q=title:(Beautiful AND Mind)
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 1,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 1,
+        "relation" : "eq"
+      },
+      "max_score" : 13.687479,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4995",
+          "_score" : 13.687479,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Beautiful Mind, A",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4995",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "BooleanQuery",
+                  "description" : "+title:beautiful +title:mind",
+                  "time_in_nanos" : 382825,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 0,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 63236,
+                    "match" : 0,
+                    "next_doc_count" : 4,
+                    "score_count" : 1,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 296,
+                    "build_scorer_count" : 8,
+                    "create_weight" : 150754,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 168525
+                  },
+                  "children" : [
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:beautiful",
+                      "time_in_nanos" : 186708,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 9,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 1,
+                        "compute_max_score_count" : 12,
+                        "compute_max_score" : 18744,
+                        "advance" : 31907,
+                        "advance_count" : 4,
+                        "score" : 518,
+                        "build_scorer_count" : 11,
+                        "create_weight" : 82011,
+                        "shallow_advance" : 5465,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 48025
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:mind",
+                      "time_in_nanos" : 80523,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 9,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 1,
+                        "compute_max_score_count" : 9,
+                        "compute_max_score" : 16985,
+                        "advance" : 4529,
+                        "advance_count" : 7,
+                        "score" : 3028,
+                        "build_scorer_count" : 10,
+                        "create_weight" : 41149,
+                        "shallow_advance" : 2565,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 12230
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time" : 12664,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 15436,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 6676
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
+  
+
++ 分组
+
+  + \+ 表示 must
+  + \- 表示 must_not
+  + title:(+matrix - reloaded)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+21,
+      "type" : "word",
+      "position" : 2
+    },
+    {
+      "token" : "foxes",
+      "start_offset" : 22,
+      "end_offset" : 27,
+      "type" : "word",
+      "position" : 3
+    },
+    {
+      "token" : "leap",
+      "start_offset" : 28,
+      "end_offset" : 32,
+      "type" : "word",
+      "position" : 4
+    },
+    {
+      "token" : "over",
+      "start_offset" : 33,
+      "end_offset" : 37,
+      "type" : "word",
+      "position" : 5
+    },
+    {
+      "token" : "lazy",
+      "start_offset" : 38,
+      "end_offset" : 42,
+      "type" : "word",
+      "position" : 6
+    },
+    {
+      "token" : "dogs",
+      "start_offset" : 43,
+      "end_offset" : 47,
+      "type" : "word",
+      "position" : 7
+    },
+    {
+      "token" : "summer",
+      "start_offset" : 55,
+      "end_offset" : 61,
+      "type" : "word",
+      "position" : 10
+    },
+    {
+      "token" : "evening",
+      "start_offset" : 62,
+      "end_offset" : 69,
+      "type" : "word",
+      "position" : 11
+    }
+  ]
+}
+```
+
+#### Keyword Analyzer
+
+```json
+{
+  "tokens" : [
+    {
+      "token" : "2 running Quick brown-foxes leap over lazy dogs in the summer evening.",
+      "start_offset" : 0,
+      "end_offset" : 70,
+      "type" : "word",
+      "position" : 0
+    }
+  ]
+}
+```
+
+#### Pattern Analyzer
+
+![image.png](https://i.loli.net/2020/03/14/TCGZeNWkBEHdl7a.png)
+
+```json
+{
+  "tokens" : [
+    {
+      "token" : "2",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "word",
+      "position" : 0
+    },
+    {
+      "token" : "running",
+      "start_offset" : 2,
+      "end_offset" : 9,
+      "type" : "word",
+      "position" : 1
+    },
+    {
+      "token" : "quick",
+      "start_offset" : 10,
+      "end_offset" : 15,
+      "type" : "word",
+      "position" : 2
+    },
+    {
+      "token" : "brown",
+      "start_offset" : 16,
+      "end_offset" : 21,
+      "type" : "word",
+      "position" : 3
+    },
+    {
+      "token" : "foxes",
+      "start_offset" : 22,
+      "end_offset" : 27,
+      "type" : "word",
+      "position" : 4
+    },
+    {
+      "token" : "leap",
+      "start_offset" : 28,
+      "end_offset" : 32,
+      "type" : "word",
+      "position" : 5
+    },
+    {
+      "token" : "over",
+      "start_offset" : 33,
+      "end_offset" : 37,
+      "type" : "word",
+      "position" : 6
+    },
+    {
+      "token" : "lazy",
+      "start_offset" : 38,
+      "end_offset" : 42,
+      "type" : "word",
+      "position" : 7
+    },
+    {
+      "token" : "dogs",
+      "start_offset" : 43,
+      "end_offset" : 47,
+      "type" : "word",
+      "position" : 8
+    },
+    {
+      "token" : "in",
+      "start_offset" : 48,
+      "end_offset" : 50,
+      "type" : "word",
+      "position" : 9
+    },
+    {
+      "token" : "the",
+      "start_offset" : 51,
+      "end_offset" : 54,
+      "type" : "word",
+      "position" : 10
+    },
+    {
+      "token" : "summer",
+      "start_offset" : 55,
+      "end_offset" : 61,
+      "type" : "word",
+      "position" : 11
+    },
+    {
+      "token" : "evening",
+      "start_offset" : 62,
+      "end_offset" : 69,
+      "type" : "word",
+      "position" : 12
+    }
+  ]
+}
+```
+
+#### Language
+
+```http
+#english
+GET _analyze
+{
+	"analyzer":"english",
+	"text":"2 running Quick brown-foxes leap over lazy dogs in the summer evening."
+}
+```
+
+```json
+{
+  "tokens" : [
+    {
+      "token" : "2",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "<NUM>",
+      "position" : 0
+    },
+    {
+      "token" : "run",
+      "start_offset" : 2,
+      "end_offset" : 9,
+      "type" : "<ALPHANUM>",
+      "position" : 1
+    },
+    {
+      "token" : "quick",
+      "start_offset" : 10,
+      "end_offset" : 15,
+      "type" : "<ALPHANUM>",
+      "position" : 2
+    },
+    {
+      "token" : "brown",
+      "start_offset" : 16,
+      "end_offset" : 21,
+      "type" : "<ALPHANUM>",
+      "position" : 3
+    },
+    {
+      "token" : "fox",
+      "start_offset" : 22,
+      "end_offset" : 27,
+      "type" : "<ALPHANUM>",
+      "position" : 4
+    },
+    {
+      "token" : "leap",
+      "start_offset" : 28,
+      "end_offset" : 32,
+      "type" : "<ALPHANUM>",
+      "position" : 5
+    },
+    {
+      "token" : "over",
+      "start_offset" : 33,
+      "end_offset" : 37,
+      "type" : "<ALPHANUM>",
+      "position" : 6
+    },
+    {
+      "token" : "lazi",
+      "start_offset" : 38,
+      "end_offset" : 42,
+      "type" : "<ALPHANUM>",
+      "position" : 7
+    },
+    {
+      "token" : "dog",
+      "start_offset" : 43,
+      "end_offset" : 47,
+      "type" : "<ALPHANUM>",
+      "position" : 8
+    },
+    {
+      "token" : "summer",
+      "start_offset" : 55,
+      "end_offset" : 61,
+      "type" : "<ALPHANUM>",
+      "position" : 11
+    },
+    {
+      "token" : "even",
+      "start_offset" : 62,
+      "end_offset" : 69,
+      "type" : "<ALPHANUM>",
+      "position" : 12
+    }
+  ]
+}
+```
+
+#### ICU Analyzer
+
+![image.png](https://i.loli.net/2020/03/14/n7dfmAxFNrCibze.png)
+
+```http
+POST _analyze
+{
+	"analyzer":"icu_analyzer",
+	"text":"他说的确实在理"
+}
+```
+
+```json
+{
+  "tokens" : [
+    {
+      "token" : "他",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 0
+    },
+    {
+      "token" : "说的",
+      "start_offset" : 1,
+      "end_offset" : 3,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 1
+    },
+    {
+      "token" : "确实",
+      "start_offset" : 3,
+      "end_offset" : 5,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 2
+    },
+    {
+      "token" : "在",
+      "start_offset" : 5,
+      "end_offset" : 6,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 3
+    },
+    {
+      "token" : "理",
+      "start_offset" : 6,
+      "end_offset" : 7,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 4
+    }
+  ]
+}
+```
+
+### 其他中文分词器
+
++ IK
+  + 支持自定义词库，支持热更新分词字典
++ THULAC
+
+## Search API概览
+
+### 指定查询的索引
+
+| 语法                   | 范围              |
+| ---------------------- | ----------------- |
+| /_search               | 集群上所有的索引  |
+| /index1/_search        | index1            |
+| /index1,index2/_search | index1和index2    |
+| /index*/_search        | 以index开头的索引 |
+
+### URI查询
+
++ 使用"q"，指定查询字符串
++ "query string syntax"，KV键值对
+
+> curl XGET 
+>
+> "http://elasticsearch:9200/kibana_sample_data_ecommerce/_search?q=customer_first_name:Eddie"
+
+### Request Body
+
+![image.png](https://i.loli.net/2020/03/15/v8iGZBPwsFbN2Dg.png)
+
+### 搜索Response
+
+![image.png](https://i.loli.net/2020/03/15/aRkI4Ecz7KLmJtP.png)
+
+### 搜索的相关性Relevance
+
++ 搜索是用户和搜索引擎的对话
++ 用户关心的是搜索结果的相关性
+  + 是否可以找到所有相关的内容
+  + 有多少不相关的内容被返回了
+  + 文档的打分是否合理
+  + 结合业务需求，平衡结果排名
+
+### 衡量相关性
+
++ Information Retrieval
+  + Precision(查准率) - 尽可能返回较少的无关文档
+  + Recall(查全率) - 尽量返回较多的相关文档
+  + Ranking - 是否能够按照相关度进行排序
+
 
 
 
