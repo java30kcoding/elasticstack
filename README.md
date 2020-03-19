@@ -3237,7 +3237,528 @@ GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
   }
   ```
 
-  
+  ```http
+  GET /movies/_search?q=title:(Beautiful NOT Mind)
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 2,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 15,
+        "relation" : "eq"
+      },
+      "max_score" : 8.723258,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3912",
+          "_score" : 8.723258,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Beautiful",
+            "genre" : [
+              "Comedy",
+              "Drama"
+            ],
+            "id" : "3912",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4242",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Beautiful Creatures",
+            "genre" : [
+              "Comedy",
+              "Crime",
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "4242",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4372",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Crazy/Beautiful",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4372",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "1046",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1996,
+            "title" : "Beautiful Thing",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "1046",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "94",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1996,
+            "title" : "Beautiful Girls",
+            "genre" : [
+              "Comedy",
+              "Drama",
+              "Romance"
+            ],
+            "id" : "94",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3302",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 1999,
+            "title" : "Beautiful People",
+            "genre" : [
+              "Comedy"
+            ],
+            "id" : "3302",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "90353",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2010,
+            "title" : "Beautiful Boy",
+            "genre" : [
+              "Drama"
+            ],
+            "id" : "90353",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "100487",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2013,
+            "title" : "Beautiful Creatures",
+            "genre" : [
+              "Drama",
+              "Fantasy",
+              "Romance"
+            ],
+            "id" : "100487",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "114126",
+          "_score" : 7.317063,
+          "_source" : {
+            "year" : 2008,
+            "title" : "Beautiful Losers",
+            "genre" : [
+              "Documentary"
+            ],
+            "id" : "114126",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "2324",
+          "_score" : 6.3012905,
+          "_source" : {
+            "year" : 0,
+            "title" : "Life Is Beautiful",
+            "genre" : [
+              "Comedy",
+              "Drama",
+              "Romance",
+              "War"
+            ],
+            "id" : "2324",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "BooleanQuery",
+                  "description" : "title:beautiful -title:mind",
+                  "time_in_nanos" : 506836,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 11,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 62875,
+                    "match" : 25559,
+                    "next_doc_count" : 20,
+                    "score_count" : 15,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 24273,
+                    "build_scorer_count" : 9,
+                    "create_weight" : 121825,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 272248
+                  },
+                  "children" : [
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:beautiful",
+                      "time_in_nanos" : 244989,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 0,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 57169,
+                        "match" : 0,
+                        "next_doc_count" : 20,
+                        "score_count" : 15,
+                        "compute_max_score_count" : 0,
+                        "compute_max_score" : 0,
+                        "advance" : 0,
+                        "advance_count" : 0,
+                        "score" : 17508,
+                        "build_scorer_count" : 13,
+                        "create_weight" : 96602,
+                        "shallow_advance" : 0,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 73661
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:mind",
+                      "time_in_nanos" : 111062,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 0,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 0,
+                        "compute_max_score_count" : 0,
+                        "compute_max_score" : 0,
+                        "advance" : 10486,
+                        "advance_count" : 4,
+                        "score" : 0,
+                        "build_scorer_count" : 8,
+                        "create_weight" : 6115,
+                        "shallow_advance" : 0,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 94448
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time" : 188389,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 57840,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 42041
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
+
+  ```http
+  GET /movies/_search?q=title:(Beautiful %2BMind)
+  {
+  	"profile":true
+  }
+  ```
+
+  ```json
+  {
+    "took" : 2,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 5,
+        "relation" : "eq"
+      },
+      "max_score" : 13.687479,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "4995",
+          "_score" : 13.687479,
+          "_source" : {
+            "year" : 2001,
+            "title" : "Beautiful Mind, A",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "4995",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "47404",
+          "_score" : 8.576847,
+          "_source" : {
+            "year" : 2004,
+            "title" : "Mind Game",
+            "genre" : [
+              "Adventure",
+              "Animation",
+              "Comedy",
+              "Fantasy",
+              "Romance",
+              "Sci-Fi"
+            ],
+            "id" : "47404",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "6003",
+          "_score" : 5.7810974,
+          "_source" : {
+            "year" : 2002,
+            "title" : "Confessions of a Dangerous Mind",
+            "genre" : [
+              "Comedy",
+              "Crime",
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "6003",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "144606",
+          "_score" : 5.7810974,
+          "_source" : {
+            "year" : 2002,
+            "title" : "Confessions of a Dangerous Mind",
+            "genre" : [
+              "Comedy",
+              "Crime",
+              "Drama",
+              "Romance",
+              "Thriller"
+            ],
+            "id" : "144606",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "7361",
+          "_score" : 5.2145147,
+          "_source" : {
+            "year" : 2004,
+            "title" : "Eternal Sunshine of the Spotless Mind",
+            "genre" : [
+              "Drama",
+              "Romance",
+              "Sci-Fi"
+            ],
+            "id" : "7361",
+            "@version" : "1"
+          }
+        }
+      ]
+    },
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "BooleanQuery",
+                  "description" : "title:beautiful +title:mind",
+                  "time_in_nanos" : 1526805,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 0,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 28994,
+                    "match" : 0,
+                    "next_doc_count" : 9,
+                    "score_count" : 5,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 39544,
+                    "build_scorer_count" : 9,
+                    "create_weight" : 196641,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 1261602
+                  },
+                  "children" : [
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:beautiful",
+                      "time_in_nanos" : 189030,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 6,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 0,
+                        "match" : 0,
+                        "next_doc_count" : 0,
+                        "score_count" : 1,
+                        "compute_max_score_count" : 3,
+                        "compute_max_score" : 5078,
+                        "advance" : 18099,
+                        "advance_count" : 4,
+                        "score" : 1110,
+                        "build_scorer_count" : 8,
+                        "create_weight" : 96959,
+                        "shallow_advance" : 2213,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 65548
+                      }
+                    },
+                    {
+                      "type" : "TermQuery",
+                      "description" : "title:mind",
+                      "time_in_nanos" : 175018,
+                      "breakdown" : {
+                        "set_min_competitive_score_count" : 0,
+                        "match_count" : 0,
+                        "shallow_advance_count" : 6,
+                        "set_min_competitive_score" : 0,
+                        "next_doc" : 1739,
+                        "match" : 0,
+                        "next_doc_count" : 2,
+                        "score_count" : 5,
+                        "compute_max_score_count" : 6,
+                        "compute_max_score" : 19695,
+                        "advance" : 4456,
+                        "advance_count" : 7,
+                        "score" : 10270,
+                        "build_scorer_count" : 13,
+                        "create_weight" : 81881,
+                        "shallow_advance" : 6679,
+                        "create_weight_count" : 1,
+                        "build_scorer" : 50258
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time" : 8870,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 69078,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 51817
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
+    }
+  }
+  ```
 
 + 分组
 
@@ -3245,403 +3766,272 @@ GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
   + \- 表示 must_not
   + title:(+matrix - reloaded)
 
++ 范围查询
 
+  + 区间表示: []闭区间，{}开区间
+    + year:{2019 TO 2018]
+    + year:[* TO 2018]
 
++ 算数符号
 
+  + year:>2010
+  + year:(>2010 && <=2018)
+  + year:(+>2010 +<=2018)
 
+  ```http
+  GET /movies/_search?q=year:>=1980
+  {
+  	"profile":true
+  }
+  ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-21,
-      "type" : "word",
-      "position" : 2
+  ```json
+  {
+    "took" : 6,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
     },
-    {
-      "token" : "foxes",
-      "start_offset" : 22,
-      "end_offset" : 27,
-      "type" : "word",
-      "position" : 3
+    "hits" : {
+      "total" : {
+        "value" : 7350,
+        "relation" : "eq"
+      },
+      "max_score" : 1.0,
+      "hits" : [
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3510",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Frequency",
+            "genre" : [
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "3510",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3511",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Ready to Rumble",
+            "genre" : [
+              "Comedy"
+            ],
+            "id" : "3511",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3512",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Return to Me",
+            "genre" : [
+              "Drama",
+              "Romance"
+            ],
+            "id" : "3512",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3513",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Rules of Engagement",
+            "genre" : [
+              "Drama",
+              "Thriller"
+            ],
+            "id" : "3513",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3514",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Joe Gould's Secret",
+            "genre" : [
+              "Drama"
+            ],
+            "id" : "3514",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3515",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 2000,
+            "title" : "Me Myself I",
+            "genre" : [
+              "Comedy",
+              "Romance"
+            ],
+            "id" : "3515",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3521",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 1989,
+            "title" : "Mystery Train",
+            "genre" : [
+              "Comedy",
+              "Drama"
+            ],
+            "id" : "3521",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3524",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 1981,
+            "title" : "Arthur",
+            "genre" : [
+              "Comedy",
+              "Romance"
+            ],
+            "id" : "3524",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3525",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 1984,
+            "title" : "Bachelor Party",
+            "genre" : [
+              "Comedy"
+            ],
+            "id" : "3525",
+            "@version" : "1"
+          }
+        },
+        {
+          "_index" : "movies",
+          "_type" : "_doc",
+          "_id" : "3526",
+          "_score" : 1.0,
+          "_source" : {
+            "year" : 1989,
+            "title" : "Parenthood",
+            "genre" : [
+              "Comedy",
+              "Drama"
+            ],
+            "id" : "3526",
+            "@version" : "1"
+          }
+        }
+      ]
     },
-    {
-      "token" : "leap",
-      "start_offset" : 28,
-      "end_offset" : 32,
-      "type" : "word",
-      "position" : 4
-    },
-    {
-      "token" : "over",
-      "start_offset" : 33,
-      "end_offset" : 37,
-      "type" : "word",
-      "position" : 5
-    },
-    {
-      "token" : "lazy",
-      "start_offset" : 38,
-      "end_offset" : 42,
-      "type" : "word",
-      "position" : 6
-    },
-    {
-      "token" : "dogs",
-      "start_offset" : 43,
-      "end_offset" : 47,
-      "type" : "word",
-      "position" : 7
-    },
-    {
-      "token" : "summer",
-      "start_offset" : 55,
-      "end_offset" : 61,
-      "type" : "word",
-      "position" : 10
-    },
-    {
-      "token" : "evening",
-      "start_offset" : 62,
-      "end_offset" : 69,
-      "type" : "word",
-      "position" : 11
+    "profile" : {
+      "shards" : [
+        {
+          "id" : "[TI4GHxnnRs6NR_trQhUTPw][movies][0]",
+          "searches" : [
+            {
+              "query" : [
+                {
+                  "type" : "IndexOrDocValuesQuery",
+                  "description" : "year:[1980 TO 9223372036854775807]",
+                  "time_in_nanos" : 4178761,
+                  "breakdown" : {
+                    "set_min_competitive_score_count" : 0,
+                    "match_count" : 0,
+                    "shallow_advance_count" : 0,
+                    "set_min_competitive_score" : 0,
+                    "next_doc" : 2073465,
+                    "match" : 0,
+                    "next_doc_count" : 7355,
+                    "score_count" : 7350,
+                    "compute_max_score_count" : 0,
+                    "compute_max_score" : 0,
+                    "advance" : 0,
+                    "advance_count" : 0,
+                    "score" : 481730,
+                    "build_scorer_count" : 10,
+                    "create_weight" : 2005,
+                    "shallow_advance" : 0,
+                    "create_weight_count" : 1,
+                    "build_scorer" : 1606845
+                  }
+                }
+              ],
+              "rewrite_time" : 2836,
+              "collector" : [
+                {
+                  "name" : "CancellableCollector",
+                  "reason" : "search_cancelled",
+                  "time_in_nanos" : 1353888,
+                  "children" : [
+                    {
+                      "name" : "SimpleTopScoreDocCollector",
+                      "reason" : "search_top_hits",
+                      "time_in_nanos" : 790749
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations" : [ ]
+        }
+      ]
     }
-  ]
-}
-```
+  }
+  ```
 
-#### Keyword Analyzer
++ 通配符查询(通配符查询效率低，内存占用大，不建议使用。特别是在最前面)
 
-```json
-{
-  "tokens" : [
-    {
-      "token" : "2 running Quick brown-foxes leap over lazy dogs in the summer evening.",
-      "start_offset" : 0,
-      "end_offset" : 70,
-      "type" : "word",
-      "position" : 0
-    }
-  ]
-}
-```
+  + ? 代表一个字符，* 代表 0 或多个字符
+    + title:mi?d
+    + title:be*
 
-#### Pattern Analyzer
++ 正则表达式
 
-![image.png](https://i.loli.net/2020/03/14/TCGZeNWkBEHdl7a.png)
+  + title:[bt]oy
 
-```json
-{
-  "tokens" : [
-    {
-      "token" : "2",
-      "start_offset" : 0,
-      "end_offset" : 1,
-      "type" : "word",
-      "position" : 0
-    },
-    {
-      "token" : "running",
-      "start_offset" : 2,
-      "end_offset" : 9,
-      "type" : "word",
-      "position" : 1
-    },
-    {
-      "token" : "quick",
-      "start_offset" : 10,
-      "end_offset" : 15,
-      "type" : "word",
-      "position" : 2
-    },
-    {
-      "token" : "brown",
-      "start_offset" : 16,
-      "end_offset" : 21,
-      "type" : "word",
-      "position" : 3
-    },
-    {
-      "token" : "foxes",
-      "start_offset" : 22,
-      "end_offset" : 27,
-      "type" : "word",
-      "position" : 4
-    },
-    {
-      "token" : "leap",
-      "start_offset" : 28,
-      "end_offset" : 32,
-      "type" : "word",
-      "position" : 5
-    },
-    {
-      "token" : "over",
-      "start_offset" : 33,
-      "end_offset" : 37,
-      "type" : "word",
-      "position" : 6
-    },
-    {
-      "token" : "lazy",
-      "start_offset" : 38,
-      "end_offset" : 42,
-      "type" : "word",
-      "position" : 7
-    },
-    {
-      "token" : "dogs",
-      "start_offset" : 43,
-      "end_offset" : 47,
-      "type" : "word",
-      "position" : 8
-    },
-    {
-      "token" : "in",
-      "start_offset" : 48,
-      "end_offset" : 50,
-      "type" : "word",
-      "position" : 9
-    },
-    {
-      "token" : "the",
-      "start_offset" : 51,
-      "end_offset" : 54,
-      "type" : "word",
-      "position" : 10
-    },
-    {
-      "token" : "summer",
-      "start_offset" : 55,
-      "end_offset" : 61,
-      "type" : "word",
-      "position" : 11
-    },
-    {
-      "token" : "evening",
-      "start_offset" : 62,
-      "end_offset" : 69,
-      "type" : "word",
-      "position" : 12
-    }
-  ]
-}
-```
++ 模糊匹配与近似查询
 
-#### Language
-
-```http
-#english
-GET _analyze
-{
-	"analyzer":"english",
-	"text":"2 running Quick brown-foxes leap over lazy dogs in the summer evening."
-}
-```
-
-```json
-{
-  "tokens" : [
-    {
-      "token" : "2",
-      "start_offset" : 0,
-      "end_offset" : 1,
-      "type" : "<NUM>",
-      "position" : 0
-    },
-    {
-      "token" : "run",
-      "start_offset" : 2,
-      "end_offset" : 9,
-      "type" : "<ALPHANUM>",
-      "position" : 1
-    },
-    {
-      "token" : "quick",
-      "start_offset" : 10,
-      "end_offset" : 15,
-      "type" : "<ALPHANUM>",
-      "position" : 2
-    },
-    {
-      "token" : "brown",
-      "start_offset" : 16,
-      "end_offset" : 21,
-      "type" : "<ALPHANUM>",
-      "position" : 3
-    },
-    {
-      "token" : "fox",
-      "start_offset" : 22,
-      "end_offset" : 27,
-      "type" : "<ALPHANUM>",
-      "position" : 4
-    },
-    {
-      "token" : "leap",
-      "start_offset" : 28,
-      "end_offset" : 32,
-      "type" : "<ALPHANUM>",
-      "position" : 5
-    },
-    {
-      "token" : "over",
-      "start_offset" : 33,
-      "end_offset" : 37,
-      "type" : "<ALPHANUM>",
-      "position" : 6
-    },
-    {
-      "token" : "lazi",
-      "start_offset" : 38,
-      "end_offset" : 42,
-      "type" : "<ALPHANUM>",
-      "position" : 7
-    },
-    {
-      "token" : "dog",
-      "start_offset" : 43,
-      "end_offset" : 47,
-      "type" : "<ALPHANUM>",
-      "position" : 8
-    },
-    {
-      "token" : "summer",
-      "start_offset" : 55,
-      "end_offset" : 61,
-      "type" : "<ALPHANUM>",
-      "position" : 11
-    },
-    {
-      "token" : "even",
-      "start_offset" : 62,
-      "end_offset" : 69,
-      "type" : "<ALPHANUM>",
-      "position" : 12
-    }
-  ]
-}
-```
-
-#### ICU Analyzer
-
-![image.png](https://i.loli.net/2020/03/14/n7dfmAxFNrCibze.png)
-
-```http
-POST _analyze
-{
-	"analyzer":"icu_analyzer",
-	"text":"他说的确实在理"
-}
-```
-
-```json
-{
-  "tokens" : [
-    {
-      "token" : "他",
-      "start_offset" : 0,
-      "end_offset" : 1,
-      "type" : "<IDEOGRAPHIC>",
-      "position" : 0
-    },
-    {
-      "token" : "说的",
-      "start_offset" : 1,
-      "end_offset" : 3,
-      "type" : "<IDEOGRAPHIC>",
-      "position" : 1
-    },
-    {
-      "token" : "确实",
-      "start_offset" : 3,
-      "end_offset" : 5,
-      "type" : "<IDEOGRAPHIC>",
-      "position" : 2
-    },
-    {
-      "token" : "在",
-      "start_offset" : 5,
-      "end_offset" : 6,
-      "type" : "<IDEOGRAPHIC>",
-      "position" : 3
-    },
-    {
-      "token" : "理",
-      "start_offset" : 6,
-      "end_offset" : 7,
-      "type" : "<IDEOGRAPHIC>",
-      "position" : 4
-    }
-  ]
-}
-```
-
-### 其他中文分词器
-
-+ IK
-  + 支持自定义词库，支持热更新分词字典
-+ THULAC
-
-## Search API概览
-
-### 指定查询的索引
-
-| 语法                   | 范围              |
-| ---------------------- | ----------------- |
-| /_search               | 集群上所有的索引  |
-| /index1/_search        | index1            |
-| /index1,index2/_search | index1和index2    |
-| /index*/_search        | 以index开头的索引 |
-
-### URI查询
-
-+ 使用"q"，指定查询字符串
-+ "query string syntax"，KV键值对
-
-> curl XGET 
->
-> "http://elasticsearch:9200/kibana_sample_data_ecommerce/_search?q=customer_first_name:Eddie"
-
-### Request Body
-
-![image.png](https://i.loli.net/2020/03/15/v8iGZBPwsFbN2Dg.png)
-
-### 搜索Response
-
-![image.png](https://i.loli.net/2020/03/15/aRkI4Ecz7KLmJtP.png)
-
-### 搜索的相关性Relevance
-
-+ 搜索是用户和搜索引擎的对话
-+ 用户关心的是搜索结果的相关性
-  + 是否可以找到所有相关的内容
-  + 有多少不相关的内容被返回了
-  + 文档的打分是否合理
-  + 结合业务需求，平衡结果排名
-
-### 衡量相关性
-
-+ Information Retrieval
-  + Precision(查准率) - 尽可能返回较少的无关文档
-  + Recall(查全率) - 尽量返回较多的相关文档
-  + Ranking - 是否能够按照相关度进行排序
-
-
-
-
+  + title:befutifl~1
+  + title:"lord rings"~2
 
 
 
