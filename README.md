@@ -4024,6 +4024,13 @@ GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
     + title:mi?d
     + title:be*
 
+  ```http
+  GET /movies/_search?q=title:b*
+  {
+  	"profile":"true"
+  }
+  ```
+
 + 正则表达式
 
   + title:[bt]oy
@@ -4032,6 +4039,107 @@ GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
 
   + title:befutifl~1
   + title:"lord rings"~2
+
+  ```http
+  GET /movies/_search?q=title:"Lord Rings"~2
+  {
+  	"profile":"true"
+  }
+  ```
+
+### Request Body Search
+
+> 一些高阶的搜索语句只能在Request Body里用
+
++ 将查询语句通过HTTP Request Body 发送给 ElasticSearch
++ Query DSL
+
+```http
+POST /movies,404_idx/_search?ignore_unavailable=true
+{
+	"profile":"true",
+	"query": {
+	  "match_all": {}
+	}
+}
+```
+
+#### 分页
+
++ From 从零开始，默认返回10个结果
++ 获取靠后的翻页成本较高
+
+```http
+POST /kibana_sample_data_ecommerce/_search
+{
+	"from": 10,
+	"size": 20, 
+	"query": {
+	  "match_all": {}
+	}
+}
+```
+
+#### 排序
+
++ 最好在数字型与日期型字段上排序
++ 因为对于多值类型或分析过的字段排序，系统会选一个值，无法得知该值
+
+```http
+POST /kibana_sample_data_ecommerce/_search
+{
+  "sort": [
+    {
+      "order_date": "desc"
+    }
+  ], 
+	"from": 10,
+	"size": 20, 
+	"query": {
+	  "match_all": {}
+	}
+}
+```
+
+#### _source filtering
+
++ 如果_source没有存储，那就只返回匹配的文档的元数据
++ _source支持使用通配符\_source["name*"]
+
+```http
+POST /kibana_sample_data_ecommerce/_search
+{
+	"_source": ["order_date"], 
+	"query": {
+	  "match_all": {}
+	}
+}
+```
+
+#### 脚本字段
+
++ 用例：订单中有不同的汇率，需要结合汇率对订单价格进行排序
+
+```http
+POST /kibana_sample_data_ecommerce/_search
+{
+  "script_fields": {
+    "new field": {
+      "script": {
+        "lang": "painless",
+        "source": "doc['order_date'].value + '_hello'"
+      }
+    }
+  }, 
+	"query": {
+	  "match_all": {}
+	}
+}
+```
+
+#### 使用查询表达式 - Match
+
+
 
 
 
