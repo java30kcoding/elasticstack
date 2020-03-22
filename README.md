@@ -4139,9 +4139,62 @@ POST /kibana_sample_data_ecommerce/_search
 
 #### 使用查询表达式 - Match
 
+```http
+GET /movies/_search
+{
+	"query": {
+	  "match": {
+	    "title": {
+	      "query": "Last Christmas",
+	      "operator": "and"
+	    }
+	  }
+	}
+}
+```
 
+#### 短语搜索 - Match Phrase
 
+```http
+GET /movies/_search
+{
+	"query": {
+	  "match_phrase": {
+	    "title": {
+	      "query": "one love",
+	      "slop": 1
+	    }
+	  }
+	}
+}
+```
 
+## Dynamic Mapping和常见字段类型
+
+### 什么是Mapping
+
++ Mapping类似数据库中的schema的定义，作用如下
+  + 定义索引中的字段的名称
+  + 定义字段的数据类型，例如字符串，数字，布尔
+  + 字段，倒排索引的相关配置
++ Mapping会把JSON文档映射成Lucene所需要的扁平格式
++ 一个Mapping属于一个索引的Type
+  + 每个文档都属于一个Type
+  + 一个Type有一个Mapping定义
+  + 7.0开始，不需要在Mapping定义中指定type信息
+
+### 字段的数据类型
+
++ 简单类型
+  + Text / Keyword
+  + Date
+  + Integer / Floating
+  + Boolean
+  + IPv4 & IPv6
++ 复杂类型 - 对象和嵌套对象
+  + 对象类型 / 嵌套类型
++ 特殊类型
+  + geo_point & get_shape / percolator
 
 
 
